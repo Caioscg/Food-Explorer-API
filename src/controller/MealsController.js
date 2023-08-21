@@ -16,6 +16,10 @@ class MealsController {
 
         return res.status(201).json()
     }
+
+    async update(req, res) {
+        const { name, category, ingredients, price, description } = req.body
+    }
 }
 
 module.exports = MealsController;
