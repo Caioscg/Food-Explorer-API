@@ -18,7 +18,7 @@ class MealsController {
     }
 
     async update(req, res) {
-        const { name, category, ingredients, price, description } = req.body
+        const { name, category, ingredients, price, description } = req.body 
     }
 }
 
