@@ -6,6 +6,12 @@ class MealsController {
 
         if (!name) throw new AppError("O nome é obrigatório!")
 
+        const [ checkIfMealExists ] = await knex("meals").where({ name })
+
+        if (checkIfMealExists.ingredients = ingredients) {
+            throw new AppError("Este prato já foi criado!")
+        }
+
         if (!category) throw new AppError("Adicione uma categoria ao prato!")
 
         if (!ingredients) throw new AppError("Os ingredientes são obrigatórios!")
