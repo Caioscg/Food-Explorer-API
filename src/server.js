@@ -1,4 +1,5 @@
 require("express-async-errors")
+const database = require("./database/sqlite")
 
 const AppError = require("./utils/AppError")
 
@@ -10,6 +11,8 @@ const app = express()
 app.use(express.json())
 
 app.use(routes)
+
+database() // roda o database (se for 1a vez, ele cria)
 
 app.use(( error, req, res, next ) => {
     if (error instanceof AppError) {
