@@ -5,7 +5,7 @@ class OrderController {
         const { meal, amount } = req.body
 
 
-        return res.status(201).json()
+        return res.status(201).json() 
     }
 }
 
