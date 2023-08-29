@@ -3,10 +3,10 @@
 exports.up = knex => knex.schema.createTable("meals", table => {
     table.increments("id")
     table.text("name")     
-    table.text("category") 
+    table.text("category")
     table.text("price")
-    table.text("ingredients")
-    table.text("descpription")
+    table.text("description")
+    table.text("avatar").nullable()
     table.timestamp("create_at").default(knex.fn.now())
     table.timestamp("updated_at").default(knex.fn.now())
 })
