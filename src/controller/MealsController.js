@@ -15,11 +15,18 @@ class MealsController {
         
         if (!description) throw new AppError("Adicione uma descrição ao prato!")
         
-        /*const [ checkIfMealExists ] = await knex("meals").where({ name })
+        const [ checkIfMealExists ] = await knex("meals").where({ name })
 
-        if (checkIfMealExists && checkIfMealExists.ingredients == ingredients) {
-            throw new AppError("Este prato já foi criado!")
-        }*/
+        if (checkIfMealExists) {
+            const checkIngredients = await knex("ingredients").select(["name"]).where({ meal_id: checkIfMealExists.id }).whereIn("name", ingredients)
+            
+            if (checkIngredients.length == ingredients.length) {
+                throw new AppError("Este prato já foi criado!")
+            }
+            if (checkIfMealExists.description == description) {
+                throw new AppError("Este prato já foi criado!")
+            }
+        }
 
         const [meal_id] = await knex("meals").insert({
             name,
@@ -35,12 +42,10 @@ class MealsController {
                     name: ingredient
                 }
             })
-    
+            
             await knex("ingredients").insert(ingredientsInsert)
         }
-
-        //await knex("meals").insert({name, category, ingredients, price, description})
-
+        
         return res.status(201).json()
     }
 
