@@ -17,15 +17,8 @@ class MealsController {
         
         const [ checkIfMealExists ] = await knex("meals").where({ name })
 
-        if (checkIfMealExists) {
-            const checkIngredients = await knex("ingredients").select(["name"]).where({ meal_id: checkIfMealExists.id }).whereIn("name", ingredients)
-            
-            if (checkIngredients.length == ingredients.length) {
+        if (checkIfMealExists && checkIfMealExists.description == description) {
                 throw new AppError("Este prato já foi criado!")
-            }
-            if (checkIfMealExists.description == description) {
-                throw new AppError("Este prato já foi criado!")
-            }
         }
 
         const [meal_id] = await knex("meals").insert({
@@ -36,8 +29,8 @@ class MealsController {
         })
 
         if (ingredients.length > 0) {
-            const ingredientsInsert = ingredients.map(ingredient => {   //**? Tabela link recebendo o note_id e o url = link
-                return {                                                //**! created_at e id ele cria por contra própria
+            const ingredientsInsert = ingredients.map(ingredient => {
+                return {
                     meal_id,
                     name: ingredient
                 }
@@ -50,11 +43,62 @@ class MealsController {
     }
 
     async update(req, res) {
-        const { name, category, ingredients, price, description } = req.body 
+        const { name, category, ingredients, price, description } = req.body
+        const { id } = req.params
+        
+        const [ meal ] = await knex("meals").where({ id })
+
+        if (!meal) {
+            throw new AppError("Prato não encontrado!")
+        }
+
+        meal.name = name ?? meal.name
+        meal.category = category ?? meal.category
+        meal.price = price ?? meal.price
+        meal.description = description ?? meal.description
+
+        const [ checkIfMealExists ] = await knex("meals").where({ name })
+
+        if (checkIfMealExists && checkIfMealExists.description == description) {
+            throw new AppError("Este prato já foi criado!")
+        }
+
+        await knex("meals")
+        .where({ id })
+        .update({
+            name,
+            category,
+            price,
+            description
+        })
+
+        const checkIngredients = await knex("ingredients").select("meal_id","name").where({ meal_id: id })
+
+        if (ingredients.length > 0) {
+            const ingredientsUpdate = ingredients.map(ingredient => {
+                return {
+                    meal_id: Number(id),
+                    name: ingredient
+                }
+            })
+
+            if (JSON.stringify(checkIngredients) === JSON.stringify(ingredientsUpdate)) {
+                return res.status(201).json()
+            }
+            else {
+                await knex("ingredients").where({ meal_id: id }).delete()
+                await knex("ingredients").insert(ingredientsUpdate)
+                return res.status(201).json()
+            }
+        }
     }
 
     async delete(req, res) {
+        const { id } = req.params
 
+        await knex("meals").where({ id }).delete()
+
+        return res.json()
     }
 }
 
