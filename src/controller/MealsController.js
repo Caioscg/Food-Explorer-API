@@ -100,6 +100,57 @@ class MealsController {
 
         return res.json()
     }
+
+    async show(req, res) {
+        const { id } = req.params
+
+        const meal = await knex("meals").where({ id }).first()
+        const ingredients = await knex("ingredients").where({ meal_id: id }).orderBy("id")
+
+        return res.json({
+            ...meal,
+            ingredients
+        })
+    }
+
+    async index(req, res) {
+        const { name, ingredient } = req.query
+
+        let meals
+
+        if (ingredient) {
+            
+            meals = await knex("ingredients")
+                .select([
+                    "meals.id",
+                    "meals.name",
+                    "meals.description",
+                    "meals.price"
+                ])
+                .whereLike("meals.name", `%${name}%`)                   // busca por nome do prato
+                .whereLike("ingredients.name", `%${ingredient}%`)       // busca por ingredientes
+                .innerJoin("meals", "meals.id", "ingredients.meal_id") // une as tabelas
+                .groupBy("meals.id")    // não repete
+                .orderBy("meals.name")  // ordem alfabética
+
+        } else {
+            meals = await knex("meals")
+            .whereLike("name", `%${name}%`)
+            .orderBy("name")
+        }
+
+        const ingredients = await knex("ingredients")
+        const mealsWithIngredients = meals.map(meal => {
+            const mealIngredients = ingredients.filter(ing => ing.meal_id === meal.id)
+
+            return {
+                ...meal,
+                ingredients: mealIngredients
+            }
+        })
+
+        return res.json(mealsWithIngredients)
+    }
 }
 
 module.exports = MealsController;
