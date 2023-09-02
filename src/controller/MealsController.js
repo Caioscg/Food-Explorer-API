@@ -138,6 +138,8 @@ class MealsController {
     async index(req, res) {
         const { name, ingredient } = req.query
 
+        //const { user_id } mostra se o prato é favoritado para aquele user
+
         let meals
 
         if (ingredient) {
@@ -172,6 +174,15 @@ class MealsController {
         })
 
         return res.json(mealsWithIngredients)
+    }
+
+    async user_update(req, res) {
+        const { favorite } = req.body
+        const { meal_id, user_id } = req.params
+
+        await knex("meals").where({ id: meal_id }).update({ favorite })
+
+        return res.status(201).json()
     }
 }
 

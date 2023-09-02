@@ -11,5 +11,6 @@ mealsRoutes.put("/:id", mealsController.update)
 mealsRoutes.delete("/:id", mealsController.delete)
 mealsRoutes.get("/:id", mealsController.show)
 mealsRoutes.get("/", mealsController.index)
+mealsRoutes.put("/:meal_id/:user_id", mealsController.user_update)
 
 module.exports = mealsRoutes

@@ -1,11 +1,9 @@
-const AppError = require("../utils/AppError")
-
 class OrderController {
     async create(req, res) {
-        const { meal, amount } = req.body
+        const { meals } = req.body
 
 
-        return res.status(201).json() 
+        return res.status(201).json(meals.length) // inicialmente, só a quantidade de pratos importa
     }
 }
 
