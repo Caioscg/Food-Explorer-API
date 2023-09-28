@@ -178,7 +178,8 @@ class MealsController {
 
     async user_update(req, res) {
         const { favorite } = req.body
-        const { meal_id, user_id } = req.params
+        const { meal_id } = req.params
+        const user_id = req.user.id
 
         await knex("meals").where({ id: meal_id }).update({ favorite })
 
