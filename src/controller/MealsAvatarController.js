@@ -4,7 +4,7 @@ const DiskStorage = require("../providers/DiskStorage")
 
 class MealsAvatarController {  // usa as funções do DiskStorage para salvar a nova foto e deletar a antiga
     async update(req, res) {
-        const meal_id = req.user.id
+        const { meal_id } = req.params
         const avatarFilename = req.file.filename
         
         const diskStorage = new DiskStorage()
@@ -18,7 +18,7 @@ class MealsAvatarController {  // usa as funções do DiskStorage para salvar a 
         if(meal.avatar) {
             await diskStorage.deleteFile(meal.avatar)
         }
-
+        
         const filename = await diskStorage.saveFile(avatarFilename)
         meal.avatar = filename
 

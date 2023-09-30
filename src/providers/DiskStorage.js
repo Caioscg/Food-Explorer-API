@@ -1,6 +1,6 @@
 const fs = require("fs") // do proprio node
 const path = require("path")
-const uploadConfig = require("../configs/upload")
+const uploadConfig = require("../configs/uploads")
 
 class DiskStorage {
     async saveFile(file) {
