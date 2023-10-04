@@ -6,7 +6,7 @@ class DiskStorage {
     async saveFile(file) {
         await fs.promises.rename(  // para mudar o arquivo de lugar do temporario pro permantente
             path.resolve(uploadConfig.TMP_FOLDER, file),  // desse 
-            path.resolve(uploadConfig.UPLOADS_FOLDER, file) // pra esse 
+            path.resolve(uploadConfig.UPLOADS_FOLDER, file) // pra esse
         )
 
         return file
