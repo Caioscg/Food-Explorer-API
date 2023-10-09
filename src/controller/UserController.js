@@ -4,7 +4,7 @@ const { hash } = require("bcryptjs")
 
 class UserController {
     async create(req, res) {
-        const { name, email, password } = req.body
+        const { name, email, password, is_admin } = req.body
 
         if (!name) throw new AppError("O nome é obrigatório!")
 
@@ -20,7 +20,7 @@ class UserController {
 
         const hashedPassword = await hash(password, 8)
 
-        await knex("users").insert({name, email, password: hashedPassword})
+        await knex("users").insert({name, email, password: hashedPassword, is_admin})
 
         return res.status(201).json()
     }

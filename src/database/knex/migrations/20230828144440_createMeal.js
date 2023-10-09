@@ -6,7 +6,6 @@ exports.up = knex => knex.schema.createTable("meals", table => {
     table.text("category")
     table.text("price")
     table.text("description")
-    table.bool("favorite").nullable()
     table.text("avatar").nullable()
     table.timestamp("create_at").default(knex.fn.now())
     table.timestamp("updated_at").default(knex.fn.now())

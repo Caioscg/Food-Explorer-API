@@ -3,6 +3,7 @@ const knex = require("../database/knex")
 
 class MealsController {
     async create(req, res) {
+        
         const { name, category, ingredients, price, description } = req.body
 
         if (!name) throw new AppError("O nome é obrigatório!")
@@ -138,8 +139,6 @@ class MealsController {
     async index(req, res) {
         const { name, ingredient } = req.query
 
-        //const { user_id } mostra se o prato é favoritado para aquele user
-
         let meals
 
         if (ingredient) {
@@ -174,16 +173,6 @@ class MealsController {
         })
 
         return res.json(mealsWithIngredients)
-    }
-
-    async user_update(req, res) {
-        const { favorite } = req.body
-        const { meal_id } = req.params
-        const user_id = req.user.id
-
-        await knex("meals").where({ id: meal_id }).update({ favorite })
-
-        return res.status(201).json()
     }
 }
 
