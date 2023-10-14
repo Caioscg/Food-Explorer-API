@@ -16,21 +16,10 @@ class MealsController {
         
         if (!description) throw new AppError("Adicione uma descrição ao prato!")
 
-        const checkIfMealExists = await knex("ingredients")
-            .select([
-                "ingredients.name"
-            ])
-            .whereLike("meals.name", `%${name}%`)  
-            .innerJoin("meals", "meals.id", "ingredients.meal_id")
-
-        const ing = ingredients.map(ing => {
-            return {
-                name: ing
-            }
-        })
-
-        if (JSON.stringify(checkIfMealExists) === JSON.stringify(ing)) {
-            throw new AppError("Este prato já foi criado!")
+        const [checkIfMealExists] = await knex("meals").where({ name })
+        
+        if (checkIfMealExists) {
+            throw new AppError("Erro! Este prato já foi criado!")
         }
 
         const [meal_id] = await knex("meals").insert({
@@ -64,27 +53,18 @@ class MealsController {
             throw new AppError("Prato não encontrado!")
         }
 
+        if (name) {
+            const [checkIfMealExists] = await knex("meals").where({ name })
+
+            if (checkIfMealExists) {
+                throw new AppError("Erro! Este prato já foi criado!")
+            }
+        }
+
         meal.name = name ?? meal.name
         meal.category = category ?? meal.category
         meal.price = price ?? meal.price
         meal.description = description ?? meal.description
-
-        const checkIfMealExists = await knex("ingredients")
-            .select([
-                "ingredients.name"
-            ])
-            .whereLike("meals.name", `%${name}%`)  
-            .innerJoin("meals", "meals.id", "ingredients.meal_id")
-
-        const ing = ingredients.map(ing => {
-            return {
-                name: ing
-            }
-        })
-
-        if (JSON.stringify(checkIfMealExists) === JSON.stringify(ing)) {
-            throw new AppError("Este prato já foi criado!")
-        }
 
         await knex("meals")
         .where({ id })
