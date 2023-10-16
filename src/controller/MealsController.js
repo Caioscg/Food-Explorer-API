@@ -117,9 +117,13 @@ class MealsController {
     }
 
     async index(req, res) {
-        const { name, ingredient } = req.query
+        let { name, ingredient } = req.query
 
         let meals
+
+        if (!name) {
+            name = "" // para nao ficar 'name' undefined
+        }
 
         if (ingredient) {
             
@@ -127,8 +131,12 @@ class MealsController {
                 .select([
                     "meals.id",
                     "meals.name",
+                    "meals.category",
+                    "meals.price",
                     "meals.description",
-                    "meals.price"
+                    "meals.avatar",
+                    "meals.create_at",
+                    "meals.updated_at"
                 ])
                 .whereLike("meals.name", `%${name}%`)                   // busca por nome do prato
                 .whereLike("ingredients.name", `%${ingredient}%`)       // busca por ingredientes
@@ -142,9 +150,9 @@ class MealsController {
             .orderBy("name")
         }
 
-        const ingredients = await knex("ingredients")
+        const ingredientsList = await knex("ingredients")
         const mealsWithIngredients = meals.map(meal => {
-            const mealIngredients = ingredients.filter(ing => ing.meal_id === meal.id)
+            const mealIngredients = ingredientsList.filter(ing => ing.meal_id === meal.id)
 
             return {
                 ...meal,
