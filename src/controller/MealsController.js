@@ -117,38 +117,30 @@ class MealsController {
     }
 
     async index(req, res) {
-        let { name, ingredient } = req.query
+        let { name } = req.query
 
         let meals
-
-        if (!name) {
-            name = "" // para nao ficar 'name' undefined
-        }
-
-        if (ingredient) {
             
-            meals = await knex("ingredients")
-                .select([
-                    "meals.id",
-                    "meals.name",
-                    "meals.category",
-                    "meals.price",
-                    "meals.description",
-                    "meals.avatar",
-                    "meals.create_at",
-                    "meals.updated_at"
-                ])
-                .whereLike("meals.name", `%${name}%`)                   // busca por nome do prato
-                .whereLike("ingredients.name", `%${ingredient}%`)       // busca por ingredientes
-                .innerJoin("meals", "meals.id", "ingredients.meal_id") // une as tabelas
-                .groupBy("meals.id")    // não repete
-                .orderBy("meals.name")  // ordem alfabética
+        const mealsByIngredients = await knex("ingredients")
+            .select([
+                "meals.id",
+                "meals.name",
+                "meals.category",
+                "meals.price",
+                "meals.description",
+                "meals.avatar"
+            ])
+            .whereLike("ingredients.name", `%${name}%`)       // busca por ingredientes
+            .innerJoin("meals", "meals.id", "ingredients.meal_id") // une as tabelas
+            .groupBy("meals.id")    // não repete
+            .orderBy("meals.name")  // ordem alfabética
 
-        } else {
-            meals = await knex("meals")
+        const mealsByName = await knex("meals")
             .whereLike("name", `%${name}%`)
             .orderBy("name")
-        }
+
+        meals = Object.assign(mealsByIngredients, mealsByName) // junta (sem repetir) as buscas
+        
 
         const ingredientsList = await knex("ingredients")
         const mealsWithIngredients = meals.map(meal => {
