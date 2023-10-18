@@ -20,6 +20,8 @@ class FavoritesController {
         const user_id = req.user.id
 
         await knex("favorites").where({ meal_id, user_id }).delete()
+
+        return res.status(201).json()
     }
 }
 
