@@ -56,7 +56,7 @@ class MealsController {
         if (name) {
             const [checkIfMealExists] = await knex("meals").where({ name })
 
-            if (checkIfMealExists) {
+            if (checkIfMealExists && checkIfMealExists.id != id) {
                 throw new AppError("Erro! Este prato já foi criado!")
             }
         }
