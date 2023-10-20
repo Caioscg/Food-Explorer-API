@@ -14,7 +14,7 @@ class MealsAvatarController {  // usa as funções do DiskStorage para salvar a 
         if(!meal) {
             throw new AppError("Prato não encontrado!", 401)
         }
-
+        console.log(meal.avatar)
         if(meal.avatar) {
             await diskStorage.deleteFile(meal.avatar)
         }
@@ -24,6 +24,24 @@ class MealsAvatarController {  // usa as funções do DiskStorage para salvar a 
 
         await knex("meals").update(meal).where({ id: meal_id })
 
+        return res.json(meal)
+    }
+
+    async delete(res, req) {
+        //const { meal_id } = req.params
+        console.log("oi")
+        const diskStorage = new DiskStorage()
+        
+        const meal = await knex("meals").where({ id: 10 }).first()
+        
+        if(!meal) {
+            throw new AppError("Prato não encontrado!", 401)
+        }
+        await diskStorage.deleteFile(meal.avatar)
+
+        meal.avatar = null
+
+        await knex("meals").where({ id: 10 }).delete()
         return res.json(meal)
     }
 }

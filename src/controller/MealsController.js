@@ -1,6 +1,8 @@
 const AppError = require("../utils/AppError")
 const knex = require("../database/knex")
 
+const DiskStorage = require("../providers/DiskStorage")
+
 class MealsController {
     async create(req, res) {
         
@@ -98,7 +100,11 @@ class MealsController {
 
     async delete(req, res) {
         const { id } = req.params
+        const diskStorage = new DiskStorage()
 
+        const meal = await knex("meals").where({ id }).first()
+        await diskStorage.deleteFile(meal.avatar)
+        
         await knex("meals").where({ id }).delete()
 
         return res.json()
