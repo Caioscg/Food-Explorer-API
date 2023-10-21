@@ -19,6 +19,6 @@ mealsRoutes.delete("/:id", ensureAuth, mealsController.delete)
 mealsRoutes.get("/:id", mealsController.show)
 mealsRoutes.get("/", mealsController.index)
 mealsRoutes.patch("/avatar/:meal_id", ensureAuth, upload.single("avatar"), mealsAvatarController.update)
-mealsRoutes.delete("/avatar/:meal_id", ensureAuth, mealsAvatarController.delete)
+//mealsRoutes.delete("/:meal_id", ensureAuth, mealsController.delete)
 
 module.exports = mealsRoutes

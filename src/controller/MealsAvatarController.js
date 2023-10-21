@@ -27,7 +27,7 @@ class MealsAvatarController {  // usa as funções do DiskStorage para salvar a 
         return res.json(meal)
     }
 
-    async delete(res, req) {
+    /*async delete(res, req) {
         //const { meal_id } = req.params
         console.log("oi")
         const diskStorage = new DiskStorage()
@@ -43,7 +43,7 @@ class MealsAvatarController {  // usa as funções do DiskStorage para salvar a 
 
         await knex("meals").where({ id: 10 }).delete()
         return res.json(meal)
-    }
+    }*/
 }
 
 module.exports = MealsAvatarController
