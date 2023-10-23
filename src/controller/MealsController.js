@@ -124,8 +124,6 @@ class MealsController {
 
     async index(req, res) {
         let { name } = req.query
-
-        let meals
             
         const mealsByIngredients = await knex("ingredients")
             .select([
@@ -141,12 +139,22 @@ class MealsController {
             .groupBy("meals.id")    // não repete
             .orderBy("meals.name")  // ordem alfabética
 
+
         const mealsByName = await knex("meals")
             .whereLike("name", `%${name}%`)
             .orderBy("name")
+            
+        const concatMeals = mealsByIngredients.concat(mealsByName)
 
-        meals = Object.assign(mealsByIngredients, mealsByName) // junta (sem repetir) as buscas
+        const meals_id = concatMeals.map(meal => (
+            meal.id
+        ))
+
+        const noRepMeals = meals_id.filter((este, i) => meals_id.indexOf(este) === i)
         
+        const meals = concatMeals.filter((meal, index) => (
+            meal.id == noRepMeals[index]
+            ))
 
         const ingredientsList = await knex("ingredients")
         const mealsWithIngredients = meals.map(meal => {

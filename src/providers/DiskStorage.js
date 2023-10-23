@@ -20,7 +20,6 @@ class DiskStorage {
         } catch {
             return
         }
-        console.log("i0sajf0aisdfa")
 
         await fs.promises.unlink(filePath)  // delete
     }

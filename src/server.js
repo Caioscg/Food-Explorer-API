@@ -1,11 +1,11 @@
 require("express-async-errors")
-const database = require("./database/sqlite")
-
-const AppError = require("./utils/AppError")
+require("dotenv/config")
 
 const express = require("express")
 const cors = require("cors") // npm install cors
 
+const database = require("./database/sqlite")
+const AppError = require("./utils/AppError")
 const uploadConfig = require("./configs/uploads")
 
 const routes = require("./routes")
